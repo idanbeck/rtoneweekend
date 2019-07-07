@@ -184,4 +184,17 @@ inline vec3 reflect(const vec3& v, const vec3& n) {
 	return (v - 2.0f*dot(v, n)*n);
 }
 
+inline bool refract(const vec3& v, const vec3& n, float NIOverNT, vec3 &vRefract) {
+	vec3 vUnit = UnitVector(v);
+	float dt = dot(vUnit, n);
+	float discriminant = 1.0f - NIOverNT * NIOverNT * (1.0f - dt*dt);
+	if(discriminant > 0) {
+		vRefract = NIOverNT * (vUnit - n * dt) - n * sqrt(discriminant);
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 #endif // ! VEC_3_H_
