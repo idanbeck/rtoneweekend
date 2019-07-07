@@ -1,2 +1,6 @@
 project('rtoneweekend', 'cpp')
-executable('rt', 'main.cpp')
+
+incdir = include_directories('include')
+
+subdir('src')
+# subdir('include')

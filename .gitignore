@@ -1,3 +1,5 @@
 # Ignore Build Directory
 
 **/builddir
+**/clean
+**/build
