@@ -158,5 +158,5 @@ inline vec3& vec3::operator/=(float t) {
 }
 
 inline vec3 UnitVector(vec3 v) {
-	return v / v.length;
+	return v / v.length();
 }

@@ -2,6 +2,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "vec3.h"
+
 int main(int argc, char *argv[]) {
 	int nx = 640;
 	int ny = 480;
