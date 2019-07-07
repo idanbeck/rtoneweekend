@@ -9,13 +9,23 @@
 #include "sphere.h"
 #include "camera.h"
 
+vec3 randomInUnitSphere() {
+	vec3 p;
+	
+	do {
+		p = 2.0f * vec3(drand48(), drand48(), drand48()) - vec3(1.0f, 1.0f, 1.0f);
+	} while(p.squaredLength() >= 1.0f);
 
+	return p;
+}
 
 vec3 color(const ray& r, hitable *world) {
 	HitRecord hit; 
 
-	if(world->hit(r, 0.0f, MAXFLOAT, hit)) {
-		return 0.5f * vec3(hit.normal.x() + 1.0f, hit.normal.y() + 1.0f, hit.normal.z() + 1.0f);
+	if(world->hit(r, 0.001f, MAXFLOAT, hit)) {
+		//return 0.5f * vec3(hit.normal.x() + 1.0f, hit.normal.y() + 1.0f, hit.normal.z() + 1.0f);
+		vec3 target = hit.p + hit.normal + randomInUnitSphere();
+		return 0.5f * color(ray(hit.p, target - hit.p), world);
 	}
 	else {
 		vec3 vUnitDirection = UnitVector(r.direction());
@@ -25,7 +35,7 @@ vec3 color(const ray& r, hitable *world) {
 }
 
 int main(int argc, char *argv[]) {
-	int scale = 4;
+	int scale = 2;
 	int nx = 200 * scale;
 	int ny = 100 * scale;
 	int ns = 100;
@@ -58,6 +68,8 @@ int main(int argc, char *argv[]) {
 				
 			}
 			col /= ns;
+			// Gamma correct
+			col = vec3(sqrt(col.r()), sqrt(col.g()), sqrt(col.b()));
 			int ir = int(255.99 * col[0]);
 			int ig = int(255.99 * col[1]);
 			int ib = int(255.99 * col[2]);
