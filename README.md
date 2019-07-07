@@ -1,6 +1,6 @@
 # Ray Tracing in One Weekend
 
-[x] http://www.realtimerendering.com/raytracing/Ray%20Tracing%20in%20a%20Weekend.pdf
+-[x] http://www.realtimerendering.com/raytracing/Ray%20Tracing%20in%20a%20Weekend.pdf
 
 # Ray Tracing the Next Week
 
