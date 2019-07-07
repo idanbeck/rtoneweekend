@@ -3,13 +3,17 @@
 
 #include "hitable.h"
 
+#include "material.h"
+
 class sphere : public hitable {
 public:
 	sphere() {}
-	sphere(vec3 cen, float r) : 
+	sphere(vec3 cen, float r, material *pMaterial) : 
 		center(cen),
 		radius(r)
-	{ }
+	{ 
+		m_pMaterial = pMaterial;
+	}
 
 	virtual bool hit(const ray& r, float tMin, float tMax, HitRecord &rec) const override;
 
@@ -32,6 +36,7 @@ bool sphere::hit(const ray& r, float tMin, float tMax, HitRecord &rec) const {
 			rec.t = temp;
 			rec.p = r.PointAtParameter(temp);
 			rec.normal = (rec.p - center) / radius;
+			rec.pMaterial = m_pMaterial;
 			return true;
 		}
 		
@@ -40,6 +45,7 @@ bool sphere::hit(const ray& r, float tMin, float tMax, HitRecord &rec) const {
 			rec.t = temp;
 			rec.p = r.PointAtParameter(temp);
 			rec.normal = (rec.p - center) / radius;
+			rec.pMaterial = m_pMaterial;
 			return true;
 		}
 	}

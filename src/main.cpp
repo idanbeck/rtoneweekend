@@ -8,14 +8,26 @@
 #include "HitableList.h"
 #include "sphere.h"
 #include "camera.h"
+#include "material.h"
 
-vec3 color(const ray& r, hitable *world) {
+#include "metal.h"
+#include "lambertian.h"
+
+vec3 color(const ray& r, hitable *world, int depth) {
 	HitRecord hit; 
 
 	if(world->hit(r, 0.001f, MAXFLOAT, hit)) {
 		//return 0.5f * vec3(hit.normal.x() + 1.0f, hit.normal.y() + 1.0f, hit.normal.z() + 1.0f);
-		vec3 target = hit.p + hit.normal + randomInUnitSphere();
-		return 0.5f * color(ray(hit.p, target - hit.p), world);
+		//vec3 target = hit.p + hit.normal + randomInUnitSphere();
+		//return 0.5f * color(ray(hit.p, target - hit.p), world);
+		ray rScattered;
+		vec3 attenuation;
+		if(depth < 50 && hit.pMaterial->scatter(r, hit, attenuation, rScattered)) {
+			return attenuation * color(rScattered, world, depth + 1);
+		}
+		else {
+			return vec3(0.0f);
+		}
 	}
 	else {
 		vec3 vUnitDirection = UnitVector(r.direction());
@@ -25,7 +37,7 @@ vec3 color(const ray& r, hitable *world) {
 }
 
 int main(int argc, char *argv[]) {
-	int scale = 2;
+	int scale = 4;
 	int nx = 200 * scale;
 	int ny = 100 * scale;
 	int ns = 100;
@@ -36,10 +48,12 @@ int main(int argc, char *argv[]) {
 
 	fileOutput << "P3\n" << nx << " " << ny << "\n255\n";
 
-	hitable *list[2];
-	list[0] = new sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f);
-	list[1] = new sphere(vec3(0.0f, -100.5f, -1.0f), 100.0f);
-	hitable *world = new HitableList(list, 2);
+	hitable *list[4];
+	list[0] = new sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, new lambertian(vec3(0.8f, 0.3f, 0.3f)));
+	list[1] = new sphere(vec3(0.0f, -100.5f, -1.0f), 100.0f, new lambertian(vec3(0.8f, 0.8f, 0.0f)));
+	list[2] = new sphere(vec3(1.0f, 0.0f, -1.0f), 0.5f, new metal(vec3(0.8f, 0.6f, 0.2f)));
+	list[3] = new sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, new metal(vec3(0.8f, 0.8f, 0.8f)));
+	hitable *world = new HitableList(list, sizeof(list) / sizeof(list[0]));
 	camera cam;
 
 	// For read out
@@ -54,7 +68,7 @@ int main(int argc, char *argv[]) {
 
 				ray r = cam.getRay(u, v);
 				vec3 p = r.PointAtParameter(2.0f);
-				col += color(r, world);
+				col += color(r, world, 0);
 				
 			}
 			col /= ns;
