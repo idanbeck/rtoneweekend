@@ -37,10 +37,43 @@ vec3 color(const ray& r, hitable *world, int depth) {
 	}
 }
 
+hitable *randomScene() {
+	int n = 500;
+	hitable **ppList = new hitable*[n + 1];
+	ppList[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(vec3(0.5f, 0.5f, 0.5f)));
+
+	int i = 1;
+
+	for(int a = -11; a < 11; a++) {
+		for(int b = -11; b < 11; b++) {
+			float chooseMat = drand48();
+			vec3 center(a + 0.9f * drand48(), 0.2f, b + 0.9f * drand48());
+			if((center - vec3(4, 0.2, 0)).length() > 0.9f) {
+				if(chooseMat < 0.8f) { 			// diffuse
+					ppList[i++] = new sphere(center, 0.2f, new lambertian(vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48())));
+				}
+				else if(chooseMat < 0.95f) {	// metal
+					ppList[i++] = new sphere(center, 0.2f, 
+						new metal(vec3(0.5*(1 + drand48()), 0.5*(1 + drand48()), 0.5*(1 + drand48())), 0.5*drand48()));
+				}
+				else {		// glass
+					ppList[i++] = new sphere(center, 0.2f, new dialectric(1.5f));
+				}
+			}
+		}
+	}
+
+	ppList[i++] = new sphere(vec3(0, 1, 0), 1.0f, new dialectric(1.5f));
+	ppList[i++] = new sphere(vec3(-4, 1, 0), 1.0f, new lambertian(vec3(0.4, 0.2, 0.1)));
+	ppList[i++] = new sphere(vec3(4, 1, 0), 1.0f, new metal(vec3(0.7, 0.6, 0.5), 0.0));
+
+	return new HitableList(ppList, i);
+}
+
 int main(int argc, char *argv[]) {
 	int scale = 1;
-	int nx = 200 * scale;
-	int ny = 100 * scale;
+	int nx = 640 * scale;
+	int ny = 480 * scale;
 	int ns = 100;
 	float pctComplete = 0.0f;
 
@@ -51,28 +84,18 @@ int main(int argc, char *argv[]) {
 
 	float R = cos(M_PI/4.0f);
 
-	hitable *list[] = {
-		new sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, new lambertian(vec3(0.1f, 0.2f, 0.5f))),
-		new sphere(vec3(0.0f, -100.5f, -1.0f), 100.0f, new lambertian(vec3(0.8f, 0.8f, 0.0f))),
-		new sphere(vec3(1.0f, 0.0f, -1.0f), 0.5f, new metal(vec3(0.8f, 0.6f, 0.2f), 0.3f)),
-		new sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, new dialectric(1.5f)),
-		new sphere(vec3(-1.0f, 0.0f, -1.0f), -0.45f, new dialectric(1.5f)),
-		// new sphere(vec3(-R, 0.0f, -1.0f), R, new lambertian(vec3(0, 0, 1))),
-		// new sphere(vec3(R, 0.0f, -1.0f), R, new lambertian(vec3(1, 0, 0))),
-	};
+	hitable *world = randomScene();
 
-	hitable *world = new HitableList(list, sizeof(list) / sizeof(list[0]));
-
-	vec3 lookFrom(3, 3, 2);
-	vec3 lookAt(0, 0, -1);
+	vec3 lookFrom(10, 1.5, 3);
+	vec3 lookAt(0, 1, 0);
 	float focusDistance = (lookFrom - lookAt).length();
-	float aperture = 2.0f;
+	float aperture = 0.1f;
 
 	camera cam(
 		lookFrom,			// origin
 		lookAt,			// look at point
 		vec3(0, 1, 0),			// up vector
-		20, 					// FOV
+		45, 					// FOV
 		float(nx) / float(ny),	// aspect ratio
 		aperture,	
 		focusDistance
