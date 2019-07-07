@@ -164,4 +164,18 @@ inline vec3 UnitVector(vec3 v) {
 	return v / v.length();
 }
 
+vec3 RandomVectorInUnitSphere() {
+	vec3 p;
+	
+	do {
+		p = 2.0f * vec3(drand48(), drand48(), drand48()) - vec3(1.0f, 1.0f, 1.0f);
+	} while(p.squaredLength() >= 1.0f);
+
+	return p;
+}
+
+inline vec3 reflect(const vec3& v, const vec3& n) {
+	return (v - 2.0f*dot(v, n)*n);
+}
+
 #endif // ! VEC_3_H_

@@ -9,16 +9,6 @@
 #include "sphere.h"
 #include "camera.h"
 
-vec3 randomInUnitSphere() {
-	vec3 p;
-	
-	do {
-		p = 2.0f * vec3(drand48(), drand48(), drand48()) - vec3(1.0f, 1.0f, 1.0f);
-	} while(p.squaredLength() >= 1.0f);
-
-	return p;
-}
-
 vec3 color(const ray& r, hitable *world) {
 	HitRecord hit; 
 
