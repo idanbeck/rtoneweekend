@@ -62,12 +62,20 @@ int main(int argc, char *argv[]) {
 	};
 
 	hitable *world = new HitableList(list, sizeof(list) / sizeof(list[0]));
+
+	vec3 lookFrom(3, 3, 2);
+	vec3 lookAt(0, 0, -1);
+	float focusDistance = (lookFrom - lookAt).length();
+	float aperture = 2.0f;
+
 	camera cam(
-		vec3(-2, 2, 1),			// origin
-		vec3(0, 0, -1),			// look at point
+		lookFrom,			// origin
+		lookAt,			// look at point
 		vec3(0, 1, 0),			// up vector
-		60, 					// FOV
-		float(nx) / float(ny)	// aspect ratio
+		20, 					// FOV
+		float(nx) / float(ny),	// aspect ratio
+		aperture,	
+		focusDistance
 	);
 
 	// For read out
