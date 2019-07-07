@@ -38,7 +38,7 @@ vec3 color(const ray& r, hitable *world, int depth) {
 }
 
 int main(int argc, char *argv[]) {
-	int scale = 2;
+	int scale = 4;
 	int nx = 200 * scale;
 	int ny = 100 * scale;
 	int ns = 100;
@@ -49,11 +49,14 @@ int main(int argc, char *argv[]) {
 
 	fileOutput << "P3\n" << nx << " " << ny << "\n255\n";
 
-	hitable *list[4];
-	list[0] = new sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, new lambertian(vec3(0.8f, 0.3f, 0.3f)));
-	list[1] = new sphere(vec3(0.0f, -100.5f, -1.0f), 100.0f, new lambertian(vec3(0.8f, 0.8f, 0.0f)));
-	list[2] = new sphere(vec3(1.0f, 0.0f, -1.0f), 0.5f, new metal(vec3(0.8f, 0.6f, 0.2f), 0.3f));
-	list[3] = new sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, new dialectric(1.5f));
+	hitable *list[] = {
+		new sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, new lambertian(vec3(0.1f, 0.2f, 0.5f))),
+		new sphere(vec3(0.0f, -100.5f, -1.0f), 100.0f, new lambertian(vec3(0.8f, 0.8f, 0.0f))),
+		new sphere(vec3(1.0f, 0.0f, -1.0f), 0.5f, new metal(vec3(0.8f, 0.6f, 0.2f), 0.3f)),
+		new sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, new dialectric(1.5f)),
+		new sphere(vec3(-1.0f, 0.0f, -1.0f), -0.45f, new dialectric(1.5f)),
+	};
+
 	hitable *world = new HitableList(list, sizeof(list) / sizeof(list[0]));
 	camera cam;
 
