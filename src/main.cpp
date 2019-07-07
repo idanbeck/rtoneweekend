@@ -38,7 +38,7 @@ vec3 color(const ray& r, hitable *world, int depth) {
 }
 
 int main(int argc, char *argv[]) {
-	int scale = 4;
+	int scale = 1;
 	int nx = 200 * scale;
 	int ny = 100 * scale;
 	int ns = 100;
@@ -49,16 +49,26 @@ int main(int argc, char *argv[]) {
 
 	fileOutput << "P3\n" << nx << " " << ny << "\n255\n";
 
+	float R = cos(M_PI/4.0f);
+
 	hitable *list[] = {
 		new sphere(vec3(0.0f, 0.0f, -1.0f), 0.5f, new lambertian(vec3(0.1f, 0.2f, 0.5f))),
 		new sphere(vec3(0.0f, -100.5f, -1.0f), 100.0f, new lambertian(vec3(0.8f, 0.8f, 0.0f))),
 		new sphere(vec3(1.0f, 0.0f, -1.0f), 0.5f, new metal(vec3(0.8f, 0.6f, 0.2f), 0.3f)),
 		new sphere(vec3(-1.0f, 0.0f, -1.0f), 0.5f, new dialectric(1.5f)),
 		new sphere(vec3(-1.0f, 0.0f, -1.0f), -0.45f, new dialectric(1.5f)),
+		// new sphere(vec3(-R, 0.0f, -1.0f), R, new lambertian(vec3(0, 0, 1))),
+		// new sphere(vec3(R, 0.0f, -1.0f), R, new lambertian(vec3(1, 0, 0))),
 	};
 
 	hitable *world = new HitableList(list, sizeof(list) / sizeof(list[0]));
-	camera cam;
+	camera cam(
+		vec3(-2, 2, 1),			// origin
+		vec3(0, 0, -1),			// look at point
+		vec3(0, 1, 0),			// up vector
+		60, 					// FOV
+		float(nx) / float(ny)	// aspect ratio
+	);
 
 	// For read out
 	std::cout.precision(2);
