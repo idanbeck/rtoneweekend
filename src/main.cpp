@@ -43,7 +43,8 @@ hitable *randomScene() {
 	ppList[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(vec3(0.5f, 0.5f, 0.5f)));
 
 	int i = 1;
-
+	
+	/*
 	for(int a = -11; a < 11; a++) {
 		for(int b = -11; b < 11; b++) {
 			float chooseMat = drand48();
@@ -62,6 +63,7 @@ hitable *randomScene() {
 			}
 		}
 	}
+	 */
 
 	ppList[i++] = new sphere(vec3(0, 1, 0), 1.0f, new dialectric(1.5f));
 	ppList[i++] = new sphere(vec3(-4, 1, 0), 1.0f, new lambertian(vec3(0.4, 0.2, 0.1)));
@@ -81,8 +83,6 @@ int main(int argc, char *argv[]) {
   	fileOutput.open("out.ppm");
 
 	fileOutput << "P3\n" << nx << " " << ny << "\n255\n";
-
-	float R = cos(M_PI/4.0f);
 
 	hitable *world = randomScene();
 
@@ -112,11 +112,13 @@ int main(int argc, char *argv[]) {
 				float v = float(j + drand48()) / float(ny);
 
 				ray r = cam.getRay(u, v);
-				vec3 p = r.PointAtParameter(2.0f);
+				//vec3 p = r.PointAtParameter(2.0f);
 				col += color(r, world, 0);
 				
 			}
+			
 			col /= ns;
+			
 			// Gamma correct
 			col = vec3(sqrt(col.r()), sqrt(col.g()), sqrt(col.b()));
 			int ir = int(255.99 * col[0]);
