@@ -3,3 +3,5 @@
 **/builddir
 **/clean
 **/build
+
+.DS_Store
