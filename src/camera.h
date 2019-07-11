@@ -15,37 +15,44 @@ vec3 RandomUnitVectorInUnitDisk() {
 
 class camera {
 public:
-	camera(vec3 lookFrom, vec3 lookAt, vec3 vUp, float fov, float aspect, float aperture, float focusDistance) {
-		lensRadius = aperture / 2.0f;
+	camera(vec3 lookFrom, vec3 lookAt, vec3 vUp, float fov, float aspect, float aperture, float focusDistance, float t0, float t1) :
+		m_time0(t0),
+		m_time1(t1)
+	{
+		m_lensRadius = aperture / 2.0f;
 
 		float theta = fov * M_PI/180.0f;
 		float halfHeight = tan(theta/2.0f);
 		float halfWidth = aspect * halfHeight;
 
-		vOrigin = lookFrom;
-		w = UnitVector(lookFrom - lookAt);
-		u = UnitVector(cross(vUp, w));
-		v = cross(w, u);
+		m_vOrigin = lookFrom;
+		m_w = UnitVector(lookFrom - lookAt);
+		m_u = UnitVector(cross(vUp, m_w));
+		m_v = cross(m_w, m_u);
 
-		vLowerLeftCorner = vOrigin - halfWidth * focusDistance * u - halfHeight * focusDistance * v - focusDistance * w;
+		m_vLowerLeftCorner = m_vOrigin - halfWidth * focusDistance * m_u - halfHeight * focusDistance * m_v - focusDistance * m_w;
 
-		vHorizontal = 2.0f * halfWidth * focusDistance * u;
-		vVertical = 2.0f * halfHeight * focusDistance * v;
+		m_vHorizontal = 2.0f * halfWidth * focusDistance * m_u;
+		m_vVertical = 2.0f * halfHeight * focusDistance * m_v;
 		
 	}
 
 	ray getRay(float s, float t) {
-		vec3 rd = lensRadius * RandomUnitVectorInUnitDisk();
-		vec3 vOffset = u * rd.x() + v * rd.y();
-		return ray(vOrigin + vOffset, vLowerLeftCorner + s * vHorizontal + t * vVertical - vOrigin - vOffset);
+		vec3 rd = m_lensRadius * RandomUnitVectorInUnitDisk();
+		vec3 vOffset = m_u * rd.x() + m_v * rd.y();
+		float time = m_time0 + drand48() * (m_time1 - m_time0);
+		return ray(m_vOrigin + vOffset, m_vLowerLeftCorner + s * m_vHorizontal + t * m_vVertical - m_vOrigin - vOffset, time);
 	}
 
-	vec3 vLowerLeftCorner;
-	vec3 vHorizontal;
-	vec3 vVertical;
-	vec3 vOrigin;
-	vec3 u, v, w;
-	float lensRadius;
+	vec3 m_vLowerLeftCorner;
+	vec3 m_vHorizontal;
+	vec3 m_vVertical;
+	vec3 m_vOrigin;
+	vec3 m_u;
+	vec3 m_v;
+	vec3 m_w;
+	float m_lensRadius;
+	float m_time0, m_time1;
 };
 
 #endif // ! CAMERA_H_

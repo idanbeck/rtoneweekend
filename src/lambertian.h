@@ -14,7 +14,7 @@ public:
 	
 	virtual bool scatter(const ray& rIn, const HitRecord &hit, vec3& attenuation, ray& rScattered) const override {
 		vec3 target = hit.p + hit.normal + RandomVectorInUnitSphere();
-		rScattered = ray(hit.p, target - hit.p);
+		rScattered = ray(hit.p, target - hit.p, rIn.m_time);
 		attenuation = albedo;
 		return true;
 	}

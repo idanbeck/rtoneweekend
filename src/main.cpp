@@ -65,8 +65,12 @@ hitable *randomScene() {
 	}
 	 */
 
+	
 	ppList[i++] = new sphere(vec3(0, 1, 0), 1.0f, new dialectric(1.5f));
+
 	ppList[i++] = new sphere(vec3(-4, 1, 0), 1.0f, new lambertian(vec3(0.4, 0.2, 0.1)));
+	dynamic_cast<sphere*>(ppList[i - 1])->SetVelocity(vec3(0.0f, 1.0f, 0.0f));
+	
 	ppList[i++] = new sphere(vec3(4, 1, 0), 1.0f, new metal(vec3(0.7, 0.6, 0.5), 0.0));
 
 	return new HitableList(ppList, i);
@@ -98,7 +102,9 @@ int main(int argc, char *argv[]) {
 		45, 					// FOV
 		float(nx) / float(ny),	// aspect ratio
 		aperture,	
-		focusDistance
+		focusDistance,
+		0.0f,
+		1.0f
 	);
 
 	// For read out

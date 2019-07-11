@@ -5,6 +5,8 @@
 ### Ray Tracing the Next Week
 
 - [ ] http://www.realtimerendering.com/raytracing/Ray%20Tracing_%20The%20Next%20Week.pdf
+	- [x] Motion Blur
+	- [ ] BVH
 
 ### Ray Tracing the Rest of your Life
 

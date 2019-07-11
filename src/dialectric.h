@@ -19,7 +19,9 @@ class dialectric : public material {
 public:
 	dialectric(float refractionIndex) :
 		m_refractionIndex(refractionIndex)
-	{}
+	{
+		// empty
+	}
 	
 	virtual bool scatter(const ray& rIn, const HitRecord &hit, vec3& attenuation, ray& rScattered) const override {
 		vec3 vOutwardNormal;
@@ -45,15 +47,15 @@ public:
 			reflectProbability = schlick(cosine, m_refractionIndex);
 		}
 		else {
-			rScattered = ray(hit.p, vReflected);
+			rScattered = ray(hit.p, vReflected, rIn.m_time);
 			reflectProbability = 1.0f;
 		}
 
 		if(drand48() < reflectProbability) {
-			rScattered = ray(hit.p, vReflected);
+			rScattered = ray(hit.p, vReflected, rIn.m_time);
 		}
 		else {
-			rScattered = ray(hit.p, vRefraction);
+			rScattered = ray(hit.p, vRefraction, rIn.m_time);
 		}
 		
 		return true;

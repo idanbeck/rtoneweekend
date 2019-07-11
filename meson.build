@@ -9,6 +9,7 @@ srcdir = include_directories('include')
 sources = ['src/main.cpp']
 includes = [
 	'src/camera.h',
+	'src/material.h',
 	'src/dialectric.h',
 	'src/hitable.h',
 	'src/HitableList.h',

@@ -50,6 +50,10 @@ public:
 	}
 
 	inline void MakeUnitVector();
+	
+	inline bool IsZero() const {
+		return ((e[0] == 0.0f) && (e[1] == 0.0f) && (e[2] == 0.0f));
+	}
 
 public:
 	float e[3];
