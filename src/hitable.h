@@ -31,8 +31,8 @@ int hitable::BoxXCompare(const void *pA, const void *pB) {
 	hitable *ah = *(hitable**)pA;
 	hitable *bh = *(hitable**)pB;
 	
-	if(ah->BoundingBox(0, 0, boxLeft) == false || bh->BoundingBox(0, 0, boxRight)) {
-		std::cerr << "no bounding box in BVH Constructor (X axis compare";
+	if(ah->BoundingBox(0, 0, boxLeft) == false || bh->BoundingBox(0, 0, boxRight) == false) {
+		std::cerr << "no bounding box in BVH Constructor (X axis compare)\n";
 	}
 	
 	if(boxLeft.m_vMin[0] - boxRight.m_vMin[0] < 0.0f)
@@ -46,8 +46,8 @@ int hitable::BoxYCompare(const void *pA, const void *pB) {
 	hitable *ah = *(hitable**)pA;
 	hitable *bh = *(hitable**)pB;
 	
-	if(ah->BoundingBox(0, 0, boxLeft) == false || bh->BoundingBox(0, 0, boxRight)) {
-		std::cerr << "no bounding box in BVH Constructor (X axis compare";
+	if(ah->BoundingBox(0, 0, boxLeft) == false || bh->BoundingBox(0, 0, boxRight) == false) {
+		std::cerr << "no bounding box in BVH Constructor (Y axis compare)\n";
 	}
 	
 	if(boxLeft.m_vMin[1] - boxRight.m_vMin[1] < 0.0f)
@@ -58,11 +58,12 @@ int hitable::BoxYCompare(const void *pA, const void *pB) {
 
 int hitable::BoxZCompare(const void *pA, const void *pB) {
 	aabb boxLeft, boxRight;
+	
 	hitable *ah = *(hitable**)pA;
 	hitable *bh = *(hitable**)pB;
 	
-	if(ah->BoundingBox(0, 0, boxLeft) == false || bh->BoundingBox(0, 0, boxRight)) {
-		std::cerr << "no bounding box in BVH Constructor (X axis compare";
+	if(ah->BoundingBox(0, 0, boxLeft) == false || bh->BoundingBox(0, 0, boxRight) == false) {
+		std::cerr << "no bounding box in BVH Constructor (Z axis compare)\n";
 	}
 	
 	if(boxLeft.m_vMin[2] - boxRight.m_vMin[2] < 0.0f)

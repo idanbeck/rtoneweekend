@@ -22,32 +22,33 @@ bool BVHNode::BoundingBox(float t0, float t1, aabb& box) const {
 }
 
 BVHNode::BVHNode(hitable **ppList, int ppList_n, float time0, float time1) {
-	int acis = int(3 * drand48());
+	int axis = int(3 * drand48());
 	
 	switch(axis) {
 		case 0: {
-			qsort(ppList, pList_n, sizeof(hitable*), aabb::BoxXCompare);
+			qsort(ppList, ppList_n, sizeof(hitable*), hitable::BoxXCompare);
 		} break;
 			
 		case 1: {
-			qsort(ppList, pList_n, sizeof(hitable*), aabb::BoxYCompare);
+			qsort(ppList, ppList_n, sizeof(hitable*), hitable::BoxYCompare);
 		} break;
 			
 		case 2: {
-			qsort(ppList, pList_n, sizeof(hitable*), aabb::BoxZCompare);
+			qsort(ppList, ppList_n, sizeof(hitable*), hitable::BoxZCompare);
 		} break;
 	}
 	
-	if(n == 1) {
+	if(ppList_n == 1) {
 		m_pLeft = m_pRight = ppList[0];
 	}
-	else if(n == 2) {
+	else if(ppList_n == 2) {
 		m_pLeft = ppList[0];
 		m_pRight = ppList[1];
 	}
 	else {
-		m_pLeft = new BVHNode(ppList, ppList_n / 2, time0, time1);
-		m_pRight = new BVHNode(ppList + ppList_n / 2, time0, time1);
+		int halfList_n = ppList_n / 2;
+		m_pLeft = new BVHNode(ppList, halfList_n, time0, time1);
+		m_pRight = new BVHNode(ppList + halfList_n, ppList_n - halfList_n, time0, time1);
 	}
 	
 	aabb boxLeft, boxRight;

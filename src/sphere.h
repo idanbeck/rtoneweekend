@@ -13,6 +13,7 @@ public:
 		m_radius(r)
 	{ 
 		m_pMaterial = pMaterial;
+		m_velocity = vec3(0.0f);
 	}
 
 	virtual bool hit(const ray& r, float tMin, float tMax, HitRecord &rec) const override;

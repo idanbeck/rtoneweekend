@@ -6,6 +6,7 @@
 #include "ray.h"
 #include "float.h"
 #include "HitableList.h"
+#include "BVHNode.h"
 #include "sphere.h"
 #include "camera.h"
 #include "material.h"
@@ -43,10 +44,11 @@ hitable *randomScene() {
 	ppList[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(vec3(0.5f, 0.5f, 0.5f)));
 
 	int i = 1;
+	int range = 11;
 	
-	/*
-	for(int a = -11; a < 11; a++) {
-		for(int b = -11; b < 11; b++) {
+	///*
+	for(int a = -range; a < range; a++) {
+		for(int b = -range; b < range; b++) {
 			float chooseMat = drand48();
 			vec3 center(a + 0.9f * drand48(), 0.2f, b + 0.9f * drand48());
 			if((center - vec3(4, 0.2, 0)).length() > 0.9f) {
@@ -63,25 +65,28 @@ hitable *randomScene() {
 			}
 		}
 	}
-	 */
+	//*/
 
 	
 	ppList[i++] = new sphere(vec3(0, 1, 0), 1.0f, new dialectric(1.5f));
 
 	ppList[i++] = new sphere(vec3(-4, 1, 0), 1.0f, new lambertian(vec3(0.4, 0.2, 0.1)));
-	dynamic_cast<sphere*>(ppList[i - 1])->SetVelocity(vec3(0.0f, 1.0f, 0.0f));
+	//dynamic_cast<sphere*>(ppList[i - 1])->SetVelocity(vec3(0.0f, 1.0f, 0.0f));
 	
 	ppList[i++] = new sphere(vec3(4, 1, 0), 1.0f, new metal(vec3(0.7, 0.6, 0.5), 0.0));
 
-	return new HitableList(ppList, i);
+	//return new HitableList(ppList, i);
+	return new BVHNode(ppList, i, 0.0f, 0.0f);
 }
 
 int main(int argc, char *argv[]) {
-	int scale = 1;
+	int scale = 2;
 	int nx = 640 * scale;
 	int ny = 480 * scale;
 	int ns = 100;
 	float pctComplete = 0.0f;
+	
+	auto timeStart = std::chrono::high_resolution_clock::now();
 
 	std::ofstream fileOutput;
   	fileOutput.open("out.ppm");
@@ -137,7 +142,10 @@ int main(int argc, char *argv[]) {
 			std::cout << "\r" << float(pctComplete * 100.0f);
 		}
 	}
-
+	
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - timeStart);
+	std::cout << "Total time: " << duration.count() << " ms\n";
+	
 	fileOutput.close();
 
 	return 0;
