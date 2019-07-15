@@ -26,6 +26,9 @@ public:
 		m_vMax(vB)
 	{ }
 	
+	vec3 min() const { return m_vMin; }
+	vec3 max() const { return m_vMax; }
+	
 	bool hit(const ray& r, float tmin, float tmax) const {
 		for(int a = 0; a < 3; a++) {
 			float invD = 1.0f / r.direction()[a];
