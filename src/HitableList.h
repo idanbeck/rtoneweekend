@@ -12,10 +12,36 @@ public:
 	}
 
 	virtual bool hit(const ray &r, float tMin, float tMax, HitRecord &rec) const override;
+	virtual bool BoundingBox(float t0, float t1, aabb& box) const override;
 
 	hitable **list = nullptr;
 	int list_n = 0;
 };
+
+bool HitableList::BoundingBox(float t0, float t1, aabb &box) const {
+	if(list_n < 1)
+		return false;
+	
+	aabb tempBox;
+	bool fFirst = list[0]->BoundingBox(t0, t1, tempBox);
+	if(fFirst == false) {
+		return false;
+	}
+	else {
+		box = tempBox;
+	}
+	
+	for(int i = 0; i < list_n; i++) {
+		if(list[i]->BoundingBox(t0, t1, tempBox)) {
+			box = aabb::SurroundingBox(box, tempBox);
+		}
+		else {
+			return false;
+		}
+	}
+	
+	return true;
+}
 
 bool HitableList::hit(const ray &r, float tMin, float tMax, HitRecord &rec) const {
 	HitRecord tempRecord;

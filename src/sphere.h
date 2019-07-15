@@ -16,6 +16,8 @@ public:
 	}
 
 	virtual bool hit(const ray& r, float tMin, float tMax, HitRecord &rec) const override;
+	virtual bool BoundingBox(float t0, float t1, aabb& box) const override;
+	
 	void SetVelocity(vec3 v){
 		m_velocity = v;
 	}
@@ -61,6 +63,29 @@ bool sphere::hit(const ray& r, float tMin, float tMax, HitRecord &rec) const {
 	}
 	
 	return false;
+}
+
+bool sphere::BoundingBox(float t0, float t1, aabb& box) const {
+	
+	vec3 hv;
+	vec3 center = m_center;
+	
+	if(m_velocity.IsZero() == false) {
+		vec3 centerT0 = m_center;
+		vec3 centerT1 = m_center + (t1 - t0) * m_velocity;
+		
+		center = m_center + 0.5f * (centerT1 - centerT0);
+		hv = vec3(ffmax(centerT0[0] + m_radius, centerT1[0] + m_radius),
+					   ffmax(centerT0[1] + m_radius, centerT1[1] + m_radius),
+					   ffmax(centerT0[2] + m_radius, centerT1[2] + m_radius));
+	}
+	else {
+		hv = vec3(m_radius, m_radius, m_radius);
+	}
+	
+	box = aabb(center - hv, center + hv);
+	
+	return true;
 }
 
 #endif // ! SPHERE_H_

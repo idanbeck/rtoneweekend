@@ -1,7 +1,7 @@
 project('rtoneweekend', 'cpp')
 
 incdir = include_directories('include')
-srcdir = include_directories('include')
+srcdir = include_directories('src')
 
 #subdir('src')
 #subdir('include')
@@ -17,7 +17,9 @@ includes = [
 	'src/metal.h',
 	'src/ray.h',
 	'src/sphere.h',
-	'src/vec3.h'
+	'src/vec3.h',
+	'src/aabb.h',
+	'src/BVHNode.h'
 ]
 
-rt_exec = executable('rt_exec', [sources, includes])
+rt_exec = executable('rt_exec', [sources, includes], include_directories:incdir)
