@@ -18,6 +18,9 @@
 #include "dialectric.h"
 
 #include "ConstantTexture.h"
+#include "CheckerTexture.h"
+
+#include "drand48.h"
 
 vec3 color(const ray& r, hitable *world, int depth) {
 	HitRecord hit; 
@@ -46,7 +49,7 @@ hitable *randomScene() {
 	int n = 500;
 	hitable **ppList = new hitable*[n + 1];
 
-	texture *pTexture = new ConstantTexture(vec3(0.5f, 0.5f, 0.5f));
+	texture *pTexture = new CheckerTexture(new ConstantTexture(vec3(0.2f, 0.3f, 0.1f)), new ConstantTexture(vec3(0.9f, 0.9f, 0.9f)));
 	ppList[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(pTexture));
 
 	int i = 1;
@@ -76,7 +79,8 @@ hitable *randomScene() {
 	
 	ppList[i++] = new sphere(vec3(0, 1, 0), 1.0f, new dialectric(1.5f));
 
-	pTexture = new ConstantTexture(vec3(0.4f, 0.2f, 0.1f));
+	
+	pTexture = new ConstantTexture(vec3(0.3f, 0.2f, 0.1f));
 	ppList[i++] = new sphere(vec3(-4, 1, 0), 1.0f, new lambertian(pTexture));
 	//dynamic_cast<sphere*>(ppList[i - 1])->SetVelocity(vec3(0.0f, 1.0f, 0.0f));
 	
@@ -87,13 +91,17 @@ hitable *randomScene() {
 }
 
 int main(int argc, char *argv[]) {
-	int scale = 2;
+	int scale = 1;
 	int nx = 640 * scale;
 	int ny = 480 * scale;
 	int ns = 100;
 	float pctComplete = 0.0f;
 	
+	InitializeRand();
+
 	auto timeStart = std::chrono::high_resolution_clock::now();
+
+	std::cout << "starting...";
 
 	std::ofstream fileOutput;
   	fileOutput.open("out.ppm");

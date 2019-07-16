@@ -8,6 +8,8 @@
 #include "ray.h"
 #include "hitable.h"
 
+#include "drand48.h"
+
 // Christophe Schlick approximation to Fresnel Refraction Term
 float schlick(float cosine, float indexRefraction) {
 	float r0 = (1.0f - indexRefraction) / (1.0f + indexRefraction);

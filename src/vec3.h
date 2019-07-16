@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <iostream>
 
+#include "drand48.h"
+
 class vec3 {
 public:
 	vec3() {}

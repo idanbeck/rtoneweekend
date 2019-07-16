@@ -21,7 +21,9 @@ includes = [
 	'src/aabb.h',
 	'src/BVHNode.h',
 	'src/texture.h',
-	'src/ConstantTexture.h'
+	'src/ConstantTexture.h',
+	'src/CheckerTexture.h',
+	'src/drand48.h'
 ]
 
 rt_exec = executable('rt_exec', [sources, includes])

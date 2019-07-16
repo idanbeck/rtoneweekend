@@ -3,6 +3,8 @@
 
 #include "hitable.h"
 
+#include "drand48.h"
+
 class BVHNode : public hitable {
 public:
 	BVHNode() {}
@@ -10,8 +12,8 @@ public:
 	virtual bool hit(const ray& r, float tmin, float tmax, HitRecord& hit) const override;
 	virtual bool BoundingBox(float t0, float t1, aabb& box) const override;
 	
-	hitable *m_pLeft;
-	hitable *m_pRight;
+	hitable *m_pLeft = nullptr;
+	hitable *m_pRight = nullptr;
 	
 	aabb m_box;
 };
