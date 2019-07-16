@@ -1,10 +1,12 @@
 #include <iostream>
 #include <iostream>
 #include <fstream>
+#include <chrono>
+#include <cstdlib>
+#include <limits>
 
 #include "vec3.h"
 #include "ray.h"
-#include "float.h"
 #include "HitableList.h"
 #include "BVHNode.h"
 #include "sphere.h"
@@ -15,10 +17,12 @@
 #include "lambertian.h"
 #include "dialectric.h"
 
+#include "ConstantTexture.h"
+
 vec3 color(const ray& r, hitable *world, int depth) {
 	HitRecord hit; 
 
-	if(world->hit(r, 0.001f, MAXFLOAT, hit)) {
+	if(world->hit(r, 0.001f, std::numeric_limits<float>::max(), hit)) {
 		//return 0.5f * vec3(hit.normal.x() + 1.0f, hit.normal.y() + 1.0f, hit.normal.z() + 1.0f);
 		//vec3 target = hit.p + hit.normal + randomInUnitSphere();
 		//return 0.5f * color(ray(hit.p, target - hit.p), world);
@@ -41,7 +45,9 @@ vec3 color(const ray& r, hitable *world, int depth) {
 hitable *randomScene() {
 	int n = 500;
 	hitable **ppList = new hitable*[n + 1];
-	ppList[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(vec3(0.5f, 0.5f, 0.5f)));
+
+	texture *pTexture = new ConstantTexture(vec3(0.5f, 0.5f, 0.5f));
+	ppList[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(pTexture));
 
 	int i = 1;
 	int range = 11;
@@ -53,7 +59,8 @@ hitable *randomScene() {
 			vec3 center(a + 0.9f * drand48(), 0.2f, b + 0.9f * drand48());
 			if((center - vec3(4, 0.2, 0)).length() > 0.9f) {
 				if(chooseMat < 0.8f) { 			// diffuse
-					ppList[i++] = new sphere(center, 0.2f, new lambertian(vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48())));
+					pTexture = new ConstantTexture(vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48()));
+					ppList[i++] = new sphere(center, 0.2f, new lambertian(pTexture));
 				}
 				else if(chooseMat < 0.95f) {	// metal
 					ppList[i++] = new sphere(center, 0.2f, 
@@ -66,11 +73,11 @@ hitable *randomScene() {
 		}
 	}
 	//*/
-
 	
 	ppList[i++] = new sphere(vec3(0, 1, 0), 1.0f, new dialectric(1.5f));
 
-	ppList[i++] = new sphere(vec3(-4, 1, 0), 1.0f, new lambertian(vec3(0.4, 0.2, 0.1)));
+	pTexture = new ConstantTexture(vec3(0.4f, 0.2f, 0.1f));
+	ppList[i++] = new sphere(vec3(-4, 1, 0), 1.0f, new lambertian(pTexture));
 	//dynamic_cast<sphere*>(ppList[i - 1])->SetVelocity(vec3(0.0f, 1.0f, 0.0f));
 	
 	ppList[i++] = new sphere(vec3(4, 1, 0), 1.0f, new metal(vec3(0.7, 0.6, 0.5), 0.0));
