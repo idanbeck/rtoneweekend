@@ -91,7 +91,7 @@ hitable *randomScene() {
 }
 
 int main(int argc, char *argv[]) {
-	int scale = 1;
+	float scale = 2.0f;
 	int nx = 640 * scale;
 	int ny = 480 * scale;
 	int ns = 100;
