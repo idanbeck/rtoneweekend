@@ -23,6 +23,8 @@ includes = [
 	'src/texture.h',
 	'src/ConstantTexture.h',
 	'src/CheckerTexture.h',
+	'src/NoiseTexture.h',
+	'src/perlin.h',
 	'src/drand48.h'
 ]
 

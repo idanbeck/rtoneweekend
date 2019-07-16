@@ -19,6 +19,7 @@
 
 #include "ConstantTexture.h"
 #include "CheckerTexture.h"
+#include "NoiseTexture.h"
 
 #include "drand48.h"
 
@@ -43,6 +44,17 @@ vec3 color(const ray& r, hitable *world, int depth) {
 		float t = 0.5f * (vUnitDirection.y() + 1.0f);
 		return (1.0f - t) * vec3(1.0f, 1.0f, 1.0f) + t * vec3(0.5f, 0.7f, 1.0f);
 	}
+}
+
+hitable *TwoPerlinSpheres() {
+	texture *pPerlin = new NoiseTexture(5.0f);
+	
+	int pList_n = 2;
+	hitable **ppList = new hitable*[pList_n];
+	ppList[0] = new sphere(vec3(0.0f, -1000.0f, 0.0f), 1000.0f, new lambertian(pPerlin));
+	ppList[1] = new sphere(vec3(0.0f, 2.0f, 0.0f), 2.0f, new lambertian(pPerlin));
+	
+	return new HitableList(ppList, 2);
 }
 
 hitable *randomScene() {
@@ -92,12 +104,12 @@ hitable *randomScene() {
 
 int main(int argc, char *argv[]) {
 	float scale = 2.0f;
-	int nx = 640 * scale;
-	int ny = 480 * scale;
-	int ns = 100;
+	int nx = 200 * scale;
+	int ny = 100 * scale;
+	int ns = 50;
 	float pctComplete = 0.0f;
 	
-	InitializeRand();
+	//InitializeRand();
 
 	auto timeStart = std::chrono::high_resolution_clock::now();
 
@@ -108,18 +120,21 @@ int main(int argc, char *argv[]) {
 
 	fileOutput << "P3\n" << nx << " " << ny << "\n255\n";
 
-	hitable *world = randomScene();
+	//hitable *world = randomScene();
+	hitable *world = TwoPerlinSpheres();
 
-	vec3 lookFrom(10, 1.5, 3);
-	vec3 lookAt(0, 1, 0);
-	float focusDistance = (lookFrom - lookAt).length();
-	float aperture = 0.1f;
+	vec3 lookFrom(13, 2, 3);
+	vec3 lookAt(0, 0, 0);
+	//float focusDistance = (lookFrom - lookAt).length();
+	float focusDistance = 10.0f;
+	//float aperture = 0.1f;
+	float aperture = 0.0f;
 
 	camera cam(
 		lookFrom,			// origin
 		lookAt,			// look at point
 		vec3(0, 1, 0),			// up vector
-		45, 					// FOV
+		20, 					// FOV
 		float(nx) / float(ny),	// aspect ratio
 		aperture,	
 		focusDistance,

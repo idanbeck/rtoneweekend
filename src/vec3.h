@@ -23,13 +23,13 @@ public:
 		e[2] = e2;
 	}
 
-	inline float x() { return e[0]; };
-	inline float y() { return e[1]; };
-	inline float z() { return e[2]; };
+	inline float x() const { return e[0]; };
+	inline float y() const { return e[1]; };
+	inline float z() const { return e[2]; };
 
-	inline float r() { return e[0]; };
-	inline float g() { return e[1]; };
-	inline float b() { return e[2]; };
+	inline float r() const { return e[0]; };
+	inline float g() const { return e[1]; };
+	inline float b() const { return e[2]; };
 
 	inline const vec3& operator+() const { return *this; }
 	inline vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
@@ -43,11 +43,11 @@ public:
 	inline vec3& operator*=(const float t);
 	inline vec3& operator/=(const float t);
 
-	inline float length() {
-		return sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
+	inline float length() const {
+		return sqrt(e[0]*e[0] + e[1]*e[1] + e[2]*e[2]);
 	}
 
-	inline float squaredLength() {
+	inline float squaredLength() const {
 		return (e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
 	}
 
@@ -116,7 +116,9 @@ inline vec3 operator/(const vec3 &lhs, float t) {
 }
 
 inline float dot(const vec3 &lhs, const vec3 &rhs) {
-	return (lhs.e[0] * rhs.e[0] + lhs.e[1] * rhs.e[1] + lhs.e[2] * rhs.e[2]);
+	return (	lhs.e[0] * rhs.e[0] +
+			lhs.e[1] * rhs.e[1] +
+			lhs.e[2] * rhs.e[2]);
 }
 
 inline vec3 cross(const vec3 &lhs, const vec3 &rhs) {

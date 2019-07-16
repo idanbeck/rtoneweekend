@@ -8,7 +8,7 @@
 	- [x] Motion Blur
 	- [x] BVH
 	- [x] Solid Textures
-	- [ ] Perlin Noise
+	- [x] Perlin Noise
 	- [ ] Image Texture Mapping
 	- [ ] Rectangles and Lights
 	- [ ] Instances
