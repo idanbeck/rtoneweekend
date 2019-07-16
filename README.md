@@ -7,7 +7,7 @@
 - [ ] http://www.realtimerendering.com/raytracing/Ray%20Tracing_%20The%20Next%20Week.pdf
 	- [x] Motion Blur
 	- [x] BVH
-	- [ ] Solid Textures
+	- [x] Solid Textures
 	- [ ] Perlin Noise
 	- [ ] Image Texture Mapping
 	- [ ] Rectangles and Lights
