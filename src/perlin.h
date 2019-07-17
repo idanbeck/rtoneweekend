@@ -15,8 +15,8 @@ inline float PerlinInterpolation(vec3 cv[2][2][2], float u, float v, float w) {
 		for(int j = 0; j < 2; j++)
 			for(int k = 0; k < 2; k++) {
 				vec3 vWeight(u - i, v - j, w - k);
-				float val = ((dot(cv[i][j][k], vWeight) + 1.0f) / 2.0f);
-				//float val = dot(cv[i][j][k], vWeight);
+				//float val = ((dot(cv[i][j][k], vWeight) + 1.0f) / 2.0f);
+				float val = dot(cv[i][j][k], vWeight);
 				
 				
 				accumulator += 	((i * uu) + (1.0f - i)*(1.0f - uu)) *

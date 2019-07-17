@@ -19,7 +19,7 @@ public:
 		//return vec3(1.0f, 1.0f, 1.0f) * 0.5f * m_noise.turbulence(m_scale * p);
 		//return vec3(1.0f, 1.0f, 1.0f)  * m_noise.turbulence(m_scale * p);
 		
-		return vec3(1.0f, 1.0f, 1.0f) * 0.5f * sin(m_scale * p.z() + 10.0f * m_noise.turbulence(p));
+		return vec3(1.0f, 1.0f, 1.0f) * 0.5f * fabs(sin(m_scale * p.z() + 10.0f * m_noise.turbulence(p)));
 	}
 	
 	perlin m_noise;
