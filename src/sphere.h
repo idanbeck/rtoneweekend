@@ -23,6 +23,16 @@ public:
 		m_velocity = v;
 	}
 
+	void GetSphereUV(const vec3& p, float& u, float&v) const {
+		auto pSphere = (p - m_center) / m_radius;
+		
+		float phi = atan2(pSphere.z(), pSphere.x());
+		float theta = asin(pSphere.y());
+
+		u = 1.0f - (phi + M_PI) / (2 * M_PI);
+		v = (theta + M_PI_2) / M_PI;
+	}
+
 	vec3 m_center;
 	float m_radius;
 	vec3 m_velocity;
@@ -48,6 +58,7 @@ bool sphere::hit(const ray& r, float tMin, float tMax, HitRecord &rec) const {
 		if(temp < tMax && temp > tMin) {
 			rec.t = temp;
 			rec.p = r.PointAtParameter(temp);
+			GetSphereUV(rec.p, rec.u, rec.v);
 			rec.normal = (rec.p - m_center) / m_radius;
 			rec.pMaterial = m_pMaterial;
 			return true;
@@ -57,6 +68,7 @@ bool sphere::hit(const ray& r, float tMin, float tMax, HitRecord &rec) const {
 		if(temp < tMax && temp > tMin) {
 			rec.t = temp;
 			rec.p = r.PointAtParameter(temp);
+			GetSphereUV(rec.p, rec.u, rec.v);
 			rec.normal = (rec.p - m_center) / m_radius;
 			rec.pMaterial = m_pMaterial;
 			return true;

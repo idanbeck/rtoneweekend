@@ -25,7 +25,9 @@ includes = [
 	'src/CheckerTexture.h',
 	'src/NoiseTexture.h',
 	'src/perlin.h',
-	'src/drand48.h'
+	'src/drand48.h',
+	'src/DiffuseLight.h',
+	'src/rect.h'
 ]
 
 rt_exec = executable('rt_exec', [sources, includes])

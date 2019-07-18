@@ -9,8 +9,8 @@
 	- [x] BVH
 	- [x] Solid Textures
 	- [x] Perlin Noise
-	- [ ] Image Texture Mapping
-	- [ ] Rectangles and Lights
+	- [\] Image Texture Mapping
+	- [x] Rectangles and Lights
 	- [ ] Instances
 	- [ ] Volumes 
 	- [ ] Test Scene

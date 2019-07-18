@@ -8,6 +8,8 @@ class material;
 
 struct HitRecord {
 	float t;
+	float u;
+	float v;
 	vec3 p;
 	vec3 normal;
 	material *pMaterial;
@@ -71,5 +73,30 @@ int hitable::BoxZCompare(const void *pA, const void *pB) {
 	else
 		return 1;
 }
+
+class FlipNormals : public hitable {
+public:
+	FlipNormals(hitable *pHitable) :
+		m_pHitable(pHitable)
+	{
+		//
+	}
+
+	virtual bool hit(const ray &r, float tMin, float tMax, HitRecord &rec) const override {
+		if(m_pHitable->hit(r, tMin, tMax, rec)) {
+			rec.normal = -rec.normal;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	virtual bool BoundingBox(float t0, float t1, aabb& box) const override {
+		return m_pHitable->BoundingBox(t0, t1, box);
+	}
+
+	hitable *m_pHitable = nullptr;
+};
 
 #endif // ! HITABLE_H_

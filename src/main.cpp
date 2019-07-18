@@ -10,6 +10,7 @@
 #include "HitableList.h"
 #include "BVHNode.h"
 #include "sphere.h"
+#include "rect.h"
 #include "camera.h"
 #include "material.h"
 
@@ -20,6 +21,7 @@
 #include "ConstantTexture.h"
 #include "CheckerTexture.h"
 #include "NoiseTexture.h"
+#include "DiffuseLight.h"
 
 #include "drand48.h"
 
@@ -32,18 +34,39 @@ vec3 color(const ray& r, hitable *world, int depth) {
 		//return 0.5f * color(ray(hit.p, target - hit.p), world);
 		ray rScattered;
 		vec3 attenuation;
+		vec3 emitted = hit.pMaterial->emitted(hit.u, hit.v, hit.p);
+
 		if(depth < 50 && hit.pMaterial->scatter(r, hit, attenuation, rScattered)) {
-			return attenuation * color(rScattered, world, depth + 1);
+			return emitted + attenuation * color(rScattered, world, depth + 1);
 		}
 		else {
-			return vec3(0.0f);
+			return emitted;
 		}
 	}
 	else {
-		vec3 vUnitDirection = UnitVector(r.direction());
-		float t = 0.5f * (vUnitDirection.y() + 1.0f);
-		return (1.0f - t) * vec3(1.0f, 1.0f, 1.0f) + t * vec3(0.5f, 0.7f, 1.0f);
+		// vec3 vUnitDirection = UnitVector(r.direction());
+		// float t = 0.5f * (vUnitDirection.y() + 1.0f);
+		// return (1.0f - t) * vec3(1.0f, 1.0f, 1.0f) + t * vec3(0.5f, 0.7f, 1.0f);
+		return vec3(0.0f, 0.0f, 0.0f);
 	}
+}
+
+hitable *CornellBox() {
+	hitable **ppList = new hitable*[6];
+	int i = 0;
+	material *pRed = new lambertian(new ConstantTexture(vec3(0.65f, 0.05f, 0.05f)));
+	material *pWhite = new lambertian(new ConstantTexture(vec3(0.73f, 0.73f, 0.73f)));
+	material *pGreen = new lambertian(new ConstantTexture(vec3(0.12f, 0.45f, 0.15f)));
+	material *pLight = new DiffuseLight(new ConstantTexture(vec3(15.0f, 15.0f, 15.0f)));
+
+	ppList[i++] = new FlipNormals(new YZRect(0, 555, 0, 555, 555, pGreen));
+	ppList[i++] = new YZRect(0, 555, 0, 555, 0, pRed);
+	ppList[i++] = new XZRect(213, 343, 227, 332, 554, pLight);
+	ppList[i++] = new FlipNormals(new XZRect(0, 555, 0, 555, 555, pWhite));
+	ppList[i++] = new XZRect(0, 555, 0, 555, 0, pWhite);
+	ppList[i++] = new FlipNormals(new XYRect(0, 555, 0, 555, 555, pWhite));
+
+	return new HitableList(ppList, i);
 }
 
 hitable *TwoPerlinSpheres() {
@@ -54,7 +77,26 @@ hitable *TwoPerlinSpheres() {
 	ppList[0] = new sphere(vec3(0.0f, -1000.0f, 0.0f), 1000.0f, new lambertian(pPerlin));
 	ppList[1] = new sphere(vec3(0.0f, 2.0f, 0.0f), 2.0f, new lambertian(pPerlin));
 	
+	//ppList[1] = new sphere(vec3(0.0f, 2.0f, 0.0f), 2.0f, new DiffuseLight(pPerlin));
+	
 	return new HitableList(ppList, 2);
+}
+
+hitable *SimpleLight() {
+	texture *pPerlin = new NoiseTexture(5.0f);
+	
+	int pList_n = 4;
+	hitable **ppList = new hitable*[pList_n];
+
+	int count = 0;
+	ppList[count++] = new sphere(vec3(0.0f, -1000.0f, 0.0f), 1000.0f, new lambertian(pPerlin));
+	ppList[count++] = new sphere(vec3(0.0f, 2.0f, 0.0f), 2.0f, new lambertian(pPerlin));
+	ppList[count++] = new sphere(vec3(0.0f, 7.0f, 0.0f), 2.0f, new DiffuseLight( new ConstantTexture(vec3(4.0f, 4.0f, 4.0f))));
+	ppList[count++] = new XYRect(3, 5, 1, 3, -2.0f, new DiffuseLight( new ConstantTexture(vec3(4.0f, 4.0f, 4.0f))));
+	
+	//ppList[1] = new sphere(vec3(0.0f, 2.0f, 0.0f), 2.0f, new DiffuseLight(pPerlin));
+	
+	return new HitableList(ppList, count);
 }
 
 hitable *randomScene() {
@@ -103,10 +145,10 @@ hitable *randomScene() {
 }
 
 int main(int argc, char *argv[]) {
-	float scale = 2.0f;
+	float scale = 1.0f;
 	int nx = 640 * scale;
 	int ny = 480 * scale;
-	int ns = 100;
+	int ns = 10000;
 	float pctComplete = 0.0f;
 	
 	//InitializeRand();
@@ -121,20 +163,23 @@ int main(int argc, char *argv[]) {
 	fileOutput << "P3\n" << nx << " " << ny << "\n255\n";
 
 	//hitable *world = randomScene();
-	hitable *world = TwoPerlinSpheres();
+	//hitable *world = TwoPerlinSpheres();
+	//hitable *world = SimpleLight();
+	hitable *world = CornellBox();
 
-	vec3 lookFrom(13, 2, 3);
-	vec3 lookAt(0, 0, 0);
+	vec3 lookFrom(278, 278, -800);
+	vec3 lookAt(278, 278, 0);
 	//float focusDistance = (lookFrom - lookAt).length();
 	float focusDistance = 10.0f;
 	//float aperture = 0.1f;
 	float aperture = 0.0f;
+	float FOV = 40.0f;
 
 	camera cam(
 		lookFrom,			// origin
 		lookAt,			// look at point
-		vec3(0, 1, 0),			// up vector
-		20, 					// FOV
+		vec3(0, 1.0f, 0),			// up vector
+		FOV, 					// FOV
 		float(nx) / float(ny),	// aspect ratio
 		aperture,	
 		focusDistance,
