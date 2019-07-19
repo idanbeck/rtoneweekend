@@ -242,10 +242,10 @@ int main(int argc, char *argv[]) {
 			int ir = int(255.99 * col[0]);
 			int ig = int(255.99 * col[1]);
 			int ib = int(255.99 * col[2]);
+			
 			fileOutput << ir << " " << ig << " " << ib << "\n";
+			
 			pctComplete = float((ny - 1 - j) * nx + i) / float(ny * nx);
-			
-			
 			std::cout << "\r" << float(pctComplete * 100.0f);
 		}
 	}
