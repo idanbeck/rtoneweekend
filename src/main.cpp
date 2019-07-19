@@ -100,6 +100,63 @@ hitable *CornellBoxSmoke() {
 	return new HitableList(ppList, i);
 }
 
+hitable *FinalScene() {
+	int nb = 20;
+	hitable **list = new hitable*[30];
+	hitable **boxlist = new hitable*[10000];
+	hitable **boxlist2 = new hitable*[10000];
+	material *white = new lambertian( new ConstantTexture(vec3(0.73, 0.73, 0.73)) );
+	material *ground = new lambertian( new ConstantTexture(vec3(0.48, 0.83, 0.53)) );
+	
+	int b = 0;
+	
+	for (int i = 0; i < nb; i++) {
+		for (int j = 0; j < nb; j++) {
+			float w = 100;
+			float x0 = -1000 + i*w;
+			float z0 = -1000 + j*w;
+			float y0 = 0;
+			float x1 = x0 + w;
+			float y1 = 100*(drand48()+0.01);
+			float z1 = z0 + w;
+			boxlist[b++] = new box(vec3(x0,y0,z0), vec3(x1, y1, z1), ground);
+		}
+	}
+	
+	int l = 0;
+	
+	list[l++] = new BVHNode(boxlist, b, 0, 1);
+	material *light = new DiffuseLight( new ConstantTexture(vec3(7, 7, 7)) );
+	
+	list[l++] = new XZRect(123, 423, 147, 412, 554, light);
+	vec3 center(400, 400, 200);
+	
+	//list[l++] = new sphere(center, center+vec3(30, 0, 0), 0, 1, 50, new lambertian(new constant_texture(vec3(0.7, 0.3, 0.1))));
+	list[l++] = new sphere(vec3(260, 150, 45), 50, new dialectric(1.5));
+	list[l++] = new sphere(vec3(0, 150, 145), 50, new metal(vec3(0.8, 0.8, 0.9), 10.0));
+	
+	hitable *boundary = new sphere(vec3(360, 150, 145), 70, new dialectric(1.5));
+	list[l++] = boundary;
+	list[l++] = new ConstantMedium(boundary, 0.2, new ConstantTexture(vec3(0.2, 0.4, 0.9)));
+	
+	boundary = new sphere(vec3(0, 0, 0), 5000, new dialectric(1.5));
+	list[l++] = new ConstantMedium(boundary, 0.0001, new ConstantTexture(vec3(1.0, 1.0, 1.0)));
+	
+	//int nx, ny, nn;
+	//unsigned char *tex_data = stbi_load("earthmap.jpg", &nx, &ny, &nn, 0);
+	//material *emat =  new lambertian(new image_texture(tex_data, nx, ny));
+	//list[l++] = new sphere(vec3(400,200, 400), 100, emat);
+	
+	texture *pertext = new NoiseTexture(0.1);
+	list[l++] =  new sphere(vec3(220,280, 300), 80, new lambertian( pertext ));
+	int ns = 1000;
+	for (int j = 0; j < ns; j++) {
+		boxlist2[j] = new sphere(vec3(165*drand48(), 165*drand48(), 165*drand48()), 10, white);
+	}
+	list[l++] = new Translate(new RotateY(new BVHNode(boxlist2,ns, 0.0, 1.0), 15), vec3(-100,270,395));
+	return new HitableList(list,l);
+}
+
 hitable *TwoPerlinSpheres() {
 	texture *pPerlin = new NoiseTexture(5.0f);
 	
@@ -179,7 +236,7 @@ int main(int argc, char *argv[]) {
 	float scale = 1.0f;
 	int nx = 640 * scale;
 	int ny = 480 * scale;
-	int ns = 1000;
+	int ns = 10000;
 	float pctComplete = 0.0f;
 	
 	//InitializeRand();
@@ -197,16 +254,22 @@ int main(int argc, char *argv[]) {
 	//hitable *world = TwoPerlinSpheres();
 	//hitable *world = SimpleLight();
 	//hitable *world = CornellBox();
-	hitable *world = CornellBoxSmoke();
+	//hitable *world = CornellBoxSmoke();
+	hitable *world = FinalScene();
 
-	vec3 lookFrom(278, 278, -800);
+	//vec3 lookFrom(278, 278, -800);
+	vec3 lookFrom(478, 278, -600);
 	vec3 lookAt(278, 278, 0);
+	
+	//vec3 lookFrom(0, 0, 6);
+	//vec3 lookAt(0,0,0);
+	
 	//float focusDistance = (lookFrom - lookAt).length();
 	float focusDistance = 10.0f;
 	//float aperture = 0.1f;
 	float aperture = 0.0f;
 	float FOV = 40.0f;
-
+	
 	camera cam(
 		lookFrom,			// origin
 		lookAt,			// look at point
@@ -246,7 +309,14 @@ int main(int argc, char *argv[]) {
 			fileOutput << ir << " " << ig << " " << ib << "\n";
 			
 			pctComplete = float((ny - 1 - j) * nx + i) / float(ny * nx);
-			std::cout << "\r" << float(pctComplete * 100.0f);
+			
+			auto duration = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - timeStart);
+			float expSeconds = (float)(duration.count()) / pctComplete;
+			int expMinutes = (expSeconds / 60.0f);
+			
+			int remainingMinutes = expMinutes - (int)((float)(duration.count()) / 60.0f);
+			
+			std::cout << "\r" << float(pctComplete * 100.0f) << "% complete, expected remaining time: " << remainingMinutes << " minutes";
 		}
 	}
 	

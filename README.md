@@ -4,7 +4,7 @@
 
 ### Ray Tracing the Next Week
 
-- [ ] http://www.realtimerendering.com/raytracing/Ray%20Tracing_%20The%20Next%20Week.pdf
+- [x] http://www.realtimerendering.com/raytracing/Ray%20Tracing_%20The%20Next%20Week.pdf
 	- [x] Motion Blur
 	- [x] BVH
 	- [x] Solid Textures
@@ -13,7 +13,7 @@
 	- [x] Rectangles and Lights
 	- [x] Instances
 	- [x] Volumes 
-	- [ ] Test Scene
+	- [x] Test Scene
 
 ### Ray Tracing the Rest of your Life
 
