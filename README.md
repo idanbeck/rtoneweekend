@@ -11,7 +11,7 @@
 	- [x] Perlin Noise
 	- [\] Image Texture Mapping
 	- [x] Rectangles and Lights
-	- [ ] Instances
+	- [x] Instances
 	- [ ] Volumes 
 	- [ ] Test Scene
 

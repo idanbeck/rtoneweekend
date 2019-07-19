@@ -27,6 +27,7 @@ includes = [
 	'src/perlin.h',
 	'src/drand48.h',
 	'src/DiffuseLight.h',
+	'src/box.h',
 	'src/rect.h'
 ]
 

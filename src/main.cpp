@@ -11,6 +11,7 @@
 #include "BVHNode.h"
 #include "sphere.h"
 #include "rect.h"
+#include "box.h"
 #include "camera.h"
 #include "material.h"
 
@@ -25,6 +26,8 @@
 
 #include "drand48.h"
 
+#define RT_DEPTH 10
+
 vec3 color(const ray& r, hitable *world, int depth) {
 	HitRecord hit; 
 
@@ -36,7 +39,7 @@ vec3 color(const ray& r, hitable *world, int depth) {
 		vec3 attenuation;
 		vec3 emitted = hit.pMaterial->emitted(hit.u, hit.v, hit.p);
 
-		if(depth < 50 && hit.pMaterial->scatter(r, hit, attenuation, rScattered)) {
+		if(depth < RT_DEPTH && hit.pMaterial->scatter(r, hit, attenuation, rScattered)) {
 			return emitted + attenuation * color(rScattered, world, depth + 1);
 		}
 		else {
@@ -52,7 +55,7 @@ vec3 color(const ray& r, hitable *world, int depth) {
 }
 
 hitable *CornellBox() {
-	hitable **ppList = new hitable*[6];
+	hitable **ppList = new hitable*[10];
 	int i = 0;
 	material *pRed = new lambertian(new ConstantTexture(vec3(0.65f, 0.05f, 0.05f)));
 	material *pWhite = new lambertian(new ConstantTexture(vec3(0.73f, 0.73f, 0.73f)));
@@ -65,6 +68,9 @@ hitable *CornellBox() {
 	ppList[i++] = new FlipNormals(new XZRect(0, 555, 0, 555, 555, pWhite));
 	ppList[i++] = new XZRect(0, 555, 0, 555, 0, pWhite);
 	ppList[i++] = new FlipNormals(new XYRect(0, 555, 0, 555, 555, pWhite));
+	
+	ppList[i++] = new Translate(new RotateY(new box(vec3(0, 0, 0), vec3(165, 165, 165), pWhite), -18.0f), vec3(130, 0, 65));
+	ppList[i++] = new Translate(new RotateY(new box(vec3(0, 0, 0), vec3(165, 330, 165), pWhite), 15.0f), vec3(265, 0, 295));
 
 	return new HitableList(ppList, i);
 }
@@ -148,7 +154,7 @@ int main(int argc, char *argv[]) {
 	float scale = 1.0f;
 	int nx = 640 * scale;
 	int ny = 480 * scale;
-	int ns = 10000;
+	int ns = 1000;
 	float pctComplete = 0.0f;
 	
 	//InitializeRand();

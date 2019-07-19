@@ -25,7 +25,7 @@ public:
 		return m_A + t * m_B;
 	}
 	
-	float time() {
+	float time() const {
 		return m_time;
 	}
 	
