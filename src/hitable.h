@@ -5,6 +5,7 @@
 #include "aabb.h"
 
 class material;
+class texture;
 
 struct HitRecord {
 	float t;
@@ -222,5 +223,7 @@ private:
 	float m_SinTheta;
 	float m_CosTheta;
 };
+
+
 
 #endif // ! HITABLE_H_

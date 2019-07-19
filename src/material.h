@@ -2,6 +2,7 @@
 #define MATERIAL_H_
 
 #include "vec3.h"
+#include "texture.h"
 
 class material {
 public:

@@ -20,6 +20,7 @@
 #include "dialectric.h"
 
 #include "ConstantTexture.h"
+#include "ConstantMedium.h"
 #include "CheckerTexture.h"
 #include "NoiseTexture.h"
 #include "DiffuseLight.h"
@@ -72,6 +73,30 @@ hitable *CornellBox() {
 	ppList[i++] = new Translate(new RotateY(new box(vec3(0, 0, 0), vec3(165, 165, 165), pWhite), -18.0f), vec3(130, 0, 65));
 	ppList[i++] = new Translate(new RotateY(new box(vec3(0, 0, 0), vec3(165, 330, 165), pWhite), 15.0f), vec3(265, 0, 295));
 
+	return new HitableList(ppList, i);
+}
+
+hitable *CornellBoxSmoke() {
+	hitable **ppList = new hitable*[10];
+	int i = 0;
+	material *pRed = new lambertian(new ConstantTexture(vec3(0.65f, 0.05f, 0.05f)));
+	material *pWhite = new lambertian(new ConstantTexture(vec3(0.73f, 0.73f, 0.73f)));
+	material *pGreen = new lambertian(new ConstantTexture(vec3(0.12f, 0.45f, 0.15f)));
+	material *pLight = new DiffuseLight(new ConstantTexture(vec3(5.0f, 5.0f, 5.0f)));
+	
+	ppList[i++] = new FlipNormals(new YZRect(0, 555, 0, 555, 555, pGreen));
+	ppList[i++] = new YZRect(0, 555, 0, 555, 0, pRed);
+	ppList[i++] = new XZRect(113, 443, 127, 432, 554, pLight);
+	ppList[i++] = new FlipNormals(new XZRect(0, 555, 0, 555, 555, pWhite));
+	ppList[i++] = new XZRect(0, 555, 0, 555, 0, pWhite);
+	ppList[i++] = new FlipNormals(new XYRect(0, 555, 0, 555, 555, pWhite));
+	
+	hitable *pBox1 = new Translate(new RotateY(new box(vec3(0, 0, 0), vec3(165, 165, 165), pWhite), -18.0f), vec3(130, 0, 65));
+	hitable *pBox2 = new Translate(new RotateY(new box(vec3(0, 0, 0), vec3(165, 330, 165), pWhite), 15.0f), vec3(265, 0, 295));
+	
+	ppList[i++] = new ConstantMedium(pBox1, 0.01f, new ConstantTexture(vec3(1.0f, 1.0f, 1.0f)));
+	ppList[i++] = new ConstantMedium(pBox2, 0.01f, new ConstantTexture(vec3(0.0f, 0.0f, 0.0f)));
+	
 	return new HitableList(ppList, i);
 }
 
@@ -171,7 +196,8 @@ int main(int argc, char *argv[]) {
 	//hitable *world = randomScene();
 	//hitable *world = TwoPerlinSpheres();
 	//hitable *world = SimpleLight();
-	hitable *world = CornellBox();
+	//hitable *world = CornellBox();
+	hitable *world = CornellBoxSmoke();
 
 	vec3 lookFrom(278, 278, -800);
 	vec3 lookAt(278, 278, 0);

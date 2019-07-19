@@ -12,7 +12,7 @@
 	- [\] Image Texture Mapping
 	- [x] Rectangles and Lights
 	- [x] Instances
-	- [ ] Volumes 
+	- [x] Volumes 
 	- [ ] Test Scene
 
 ### Ray Tracing the Rest of your Life
